@@ -2,11 +2,17 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
+import { BrowserRouter } from 'react-router-dom';
+import { ArtistProvider } from './context';
 import * as serviceWorker from './serviceWorker';
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <ArtistProvider>
+      <BrowserRouter>
+        <App /> 
+      </BrowserRouter>
+    </ArtistProvider>
   </React.StrictMode>,
   document.getElementById('root')
 );
