@@ -13,18 +13,18 @@ const Navbar = () => {
       <div className="nav-center">
         <div className="nav-header">
 
-          {/* <Link to="/"> */}
+          <Link to="/">
             {/* <img className="image" src={Logo} alt="Beach Resort" /> */}
-            <span className="logo logo-left link-text">wiki</span>
-            <span className="logo logo-right link-text">Repo</span>
+            <span className="logo logo-left">wiki</span>
+            <span className="logo logo-right">Repo</span>
             {/* <span className="logo-text"><em>--</em></span> */}
-          {/* </Link> */}
+          </Link>
 
-          <button type="button" className="nav-btn" onClick={handleToggle}>
+          {/* <button type="button" className="nav-btn" onClick={handleToggle}>
             <FaAlignRight className="nav-icon" />
-          </button>
+          </button> */}
         </div>
-        <ul
+        {/* <ul
           className={
             isOpen ? "nav-links show-nav link-text" : "nav-links link-text"
           }
@@ -41,7 +41,7 @@ const Navbar = () => {
           <li onClick={handleToggle}>
             <Link to="/">Songs</Link>
           </li>
-        </ul>
+        </ul> */}
       </div>
       <div className="curved-shape"></div>
     </nav>

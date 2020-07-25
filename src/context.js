@@ -1,9 +1,9 @@
-import React, { Component } from "react";
-import items from "./data";
-// import Client from "./Contentful";
+import React, { Component, useEffect } from "react";
+// import items from "./data";
+import axios from 'axios';
+import { URL_BASE, URL_ARTIST } from './constants'; 
 
 const ArtistContext = React.createContext();
-// console.log(items);
 
 export default class ArtistProvider extends Component {
   state = {
@@ -12,29 +12,65 @@ export default class ArtistProvider extends Component {
     featuredArtists: [],
     loading: true,
     //
-    type: "all",
+    genre: "~all~",
+    artistName: ""
   };
 
-  componentDidMount() {
-    // this.getData();
-    let artists = this.formatData(items);
-    // let artists = items;
-    let featuredArtists = artists.filter(artist => artist.featured === true);
-    // console.log(featuredArtists);
-    this.setState({
-      artists,
-      featuredArtists,
-      sortedArtists: artists,
-      loading: false,
-      //
+  getData() {
+    const apiUrl = URL_BASE + URL_ARTIST;
+  
+    axios.get(apiUrl)
+      .then((res) => {
+        const data = res.data;
+        // console.log(data);
+
+        let artists = this.formatData(data);
+        // console.log('artists', artists);
+        // let artists = items;
+        let featuredArtists = artists.filter(artist => artist.featured === true);
+        // console.log('featured', featuredArtists);
+        // console.log(featuredArtists);
+        this.setState({
+          artists,
+          featuredArtists,
+          sortedArtists: artists,
+          loading: false,
+        });
     });
   }
 
+  componentDidMount() {
+    this.getData();
+
+    // let artists = this.formatData(items);
+    // let artists = this.formatData(data);
+    // console.log('artists', artists);
+    // // let artists = items;
+    // let featuredArtists = artists.filter(artist => artist.featured === true);
+    // console.log('featured', featuredArtists);
+    // // console.log(featuredArtists);
+    // this.setState({
+    //   artists,
+    //   featuredArtists,
+    //   sortedArtists: artists,
+    //   loading: false,
+    // });
+  }
+
   formatData(items) {
+    // console.log('items', items);
     let tempItems = items.map(item => {
-      let id = item._id;
-      let images = item.images.map(image => image.url);
+      let id = item.id;    
+      // console.log('id', id);
+
+      let images = item.imageData.map(image => image.url);
+      // console.log('images', images);
+
+      // let musicians = item.musicianData.map(musician => musician.musicianName);
+
       let artist = { ...item, images, id };
+      // console.log('artist', artist);
+
       return artist;
     });
     return tempItems;
@@ -50,12 +86,15 @@ export default class ArtistProvider extends Component {
     const target = event.target;
     const value = target.type === "checkbox" ? target.checked : target.value;
     const name = target.name;
-    console.log(name, value);
-
+    
+    if (name === 'artistName'){
+      console.log('handleChange', name, value);
+    }
     this.setState(
       {
         [name]: value
       },
+     
       this.filterArtists
     );
   };
@@ -63,6 +102,8 @@ export default class ArtistProvider extends Component {
   filterArtists = () => {
     let {
       artists,
+      genre,
+      artistName
     } = this.state;
 
     let tempArtists = [...artists];
@@ -70,28 +111,21 @@ export default class ArtistProvider extends Component {
     // get capacity
     // capacity = parseInt(capacity);
     // price = parseInt(price);
-    // filter by type
-    // if (type !== "all") {
-    //   tempRooms = tempRooms.filter(room => room.type === type);
-    // }
-    // filter by capacity
-    // if (capacity !== 1) {
-    //   tempRooms = tempRooms.filter(room => room.capacity >= capacity);
-    // }
-    // filter by price
-    // tempRooms = tempRooms.filter(room => room.price <= price);
-    //filter by size
-    // tempRooms = tempRooms.filter(
-    //   room => room.size >= minSize && room.size <= maxSize
-    // );
-    //filter by breakfast
-    // if (breakfast) {
-    //   tempRooms = tempRooms.filter(room => room.breakfast === true);
-    // }
-    //filter by pets
-    // if (pets) {
-    //   tempRooms = tempRooms.filter(room => room.pets === true);
-    // }
+
+    // filter by genre
+    if (genre !== "~ All ~") {
+      tempArtists = tempArtists.filter(artist => artist.genre === genre);
+    }
+
+    // filter by name
+    if (artistName !== "") {
+        // console.log('artistName ', artistName);
+        // reload the tempArtists to nullify any genre picked
+        tempArtists = [...artists];
+        tempArtists = tempArtists.filter(artist => 
+          artist.artistName.toLowerCase()
+            .includes(artistName.toLowerCase()));
+    }
     this.setState({
       sortedArtists: tempArtists
     });

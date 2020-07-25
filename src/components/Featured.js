@@ -11,11 +11,11 @@ export default class Featured extends Component {
     let { loading, featuredArtists: artists } = this.context;
 
     artists = artists.map(artist => {
-      return <Artist key={artist._id} artist={artist} />;
+      return <Artist key={artist.id} artist={artist} />;
     });
     return (
       <section className="featured-rooms">
-        <Title title="featured artists" />
+        <Title title="featured" />
         <div className="featured-rooms-center">
           {loading ? <Loading /> : artists}
         </div>
